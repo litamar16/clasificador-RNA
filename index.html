@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Clasificador RNA</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+</head>
+
+<body>
+
+    <div class="app">
+
+        <h1>🧠 Clasificador de Números</h1>
+
+        <p>Red Neuronal Artificial</p>
+
+        <div class="estado">
+            Estado:
+            <strong id="estado">Preparando...</strong>
+        </div>
+
+        <input
+            id="numero"
+            type="number"
+            placeholder="Introduce un número"
+        >
+
+        <button onclick="analizarNumero()">
+            🔍 ANALIZAR
+        </button>
+
+        <div id="resultado">
+            Entrenando la RNA...
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
