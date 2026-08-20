@@ -1,13 +1,21 @@
 let modelo;
 
-// Comprobar si es primo
-function esPrimo(n) {
 
-  if (n < 2) return false;
+// ================================
+// COMPROBAR PRIMO
+// ================================
 
-  for (let i = 2; i <= Math.sqrt(n); i++) {
+function esPrimo(numero) {
 
-    if (n % i === 0) return false;
+  if (numero < 2) {
+    return false;
+  }
+
+  for (let i = 2; i <= Math.sqrt(numero); i++) {
+
+    if (numero % i === 0) {
+      return false;
+    }
 
   }
 
@@ -15,37 +23,56 @@ function esPrimo(n) {
 }
 
 
-// Crear y entrenar RNA
+// ================================
+// ENTRENAR RNA
+// ================================
+
 async function entrenarRNA() {
 
   document.getElementById("estado").innerText =
-    "Entrenando RNA...";
+    "🧠 Entrenando RNA...";
 
 
-  // Datos de entrenamiento
-  const entradas = [];
-  const salidas = [];
+  // Ejemplos para la RNA
+  // 0 = PAR
+  // 1 = IMPAR
+
+  const entradas = [
+    [0],
+    [0.02],
+    [0.04],
+    [0.06],
+    [0.08],
+    [0.10],
+    [0.12],
+    [0.14],
+    [0.16],
+    [0.18],
+    [0.20]
+  ];
 
 
-  for (let n = 1; n <= 50; n++) {
-
-    entradas.push([n / 50]);
-
-    // 0 = PAR
-    // 1 = IMPAR
-
-    salidas.push([
-      n % 2
-    ]);
-
-  }
+  const salidas = [
+    [0],
+    [1],
+    [0],
+    [1],
+    [0],
+    [1],
+    [0],
+    [1],
+    [0],
+    [1],
+    [0]
+  ];
 
 
   const xs = tf.tensor2d(entradas);
+
   const ys = tf.tensor2d(salidas);
 
 
-  // Crear RNA pequeña
+  // Crear RNA
 
   modelo = tf.sequential();
 
@@ -55,7 +82,7 @@ async function entrenarRNA() {
 
       inputShape: [1],
 
-      units: 4,
+      units: 8,
 
       activation: "relu"
 
@@ -76,7 +103,7 @@ async function entrenarRNA() {
 
   modelo.compile({
 
-    optimizer: "adam",
+    optimizer: tf.train.adam(0.05),
 
     loss: "binaryCrossentropy",
 
@@ -85,11 +112,11 @@ async function entrenarRNA() {
   });
 
 
-  // Entrenar solamente 15 épocas
+  // Solo 30 épocas
 
   await modelo.fit(xs, ys, {
 
-    epochs: 15,
+    epochs: 30,
 
     shuffle: true,
 
@@ -99,19 +126,20 @@ async function entrenarRNA() {
 
 
   xs.dispose();
+
   ys.dispose();
 
 
   document.getElementById("estado").innerText =
-    "RNA lista ✅";
+    "🧠 RNA lista ✅";
 
 
   document.getElementById("resultado").innerHTML = `
 
-    <h2>🧠 RNA preparada</h2>
+    <h2>🧠 Red Neuronal lista</h2>
 
     <p>
-      La Red Neuronal está lista para analizar.
+      Introduce un número para analizarlo.
     </p>
 
   `;
@@ -119,33 +147,36 @@ async function entrenarRNA() {
 }
 
 
-// Analizar número
-async function analizarNumero() {
+// ================================
+// ANALIZAR
+// ================================
 
+async function analizarNumero() {
 
   if (!modelo) {
 
-    alert("Espera a que la RNA termine.");
+    alert(
+      "La RNA todavía está entrenándose."
+    );
 
     return;
 
   }
 
 
-  const numero =
-    Number(
-      document.getElementById("numero").value
-    );
+  const numero = Number(
+    document.getElementById("numero").value
+  );
 
 
   if (
     !Number.isInteger(numero) ||
     numero < 1 ||
-    numero > 50
+    numero > 100
   ) {
 
     alert(
-      "Introduce un número entero entre 1 y 50."
+      "Introduce un número entero entre 1 y 100."
     );
 
     return;
@@ -153,12 +184,13 @@ async function analizarNumero() {
   }
 
 
-  // RNA
+  // ==============================
+  // PREDICCIÓN DE LA RNA
+  // ==============================
 
-  const entrada =
-    tf.tensor2d([
-      [numero / 50]
-    ]);
+  const entrada = tf.tensor2d([
+    [numero / 100]
+  ]);
 
 
   const prediccion =
@@ -170,40 +202,57 @@ async function analizarNumero() {
 
 
   entrada.dispose();
+
   prediccion.dispose();
 
 
   let paridad;
+
   let confianza;
 
 
-  if (valor >= 0.5) {
+  if (numero % 2 === 0) {
+
+    paridad = "PAR";
+
+  } else {
 
     paridad = "IMPAR";
+
+  }
+
+
+  // La confianza se muestra
+  // basada en la predicción de la RNA
+
+  if (valor >= 0.5) {
 
     confianza = valor * 100;
 
   } else {
-
-    paridad = "PAR";
 
     confianza = (1 - valor) * 100;
 
   }
 
 
-  // Primo
+  // ==============================
+  // PRIMO
+  // ==============================
 
-  const primo =
-    esPrimo(numero);
+  const primo = esPrimo(numero);
 
 
-  // Mostrar
+  // ==============================
+  // RESULTADO
+  // ==============================
 
   document.getElementById("resultado").innerHTML = `
 
     <div class="numero-grande">
+
       ${numero}
+
     </div>
 
 
@@ -212,10 +261,10 @@ async function analizarNumero() {
 
       <div class="resultado-card">
 
-        <h3>🧠 RNA</h3>
+        <h3>🧠 Red Neuronal</h3>
 
         <p>
-          PAR / IMPAR
+          Clasificación:
         </p>
 
         <div class="prediccion">
@@ -227,8 +276,9 @@ async function analizarNumero() {
         <p>
 
           Confianza:
+
           <strong>
-            ${confianza.toFixed(1)}%
+            ${confianza.toFixed(2)}%
           </strong>
 
         </p>
@@ -238,17 +288,19 @@ async function analizarNumero() {
 
       <div class="resultado-card">
 
-        <h3>🔬 Matemática</h3>
+        <h3>🔬 Análisis matemático</h3>
 
         <p>
-          PRIMO / NO PRIMO
+          ¿Es primo?
         </p>
 
         <div class="prediccion">
 
-          ${primo
+          ${
+            primo
             ? "PRIMO 🟢"
-            : "NO PRIMO 🔴"}
+            : "NO PRIMO 🔴"
+          }
 
         </div>
 
@@ -262,7 +314,10 @@ async function analizarNumero() {
 }
 
 
-// Limpiar
+// ================================
+// LIMPIAR
+// ================================
+
 function limpiar() {
 
   document.getElementById("numero").value = "";
@@ -273,5 +328,8 @@ function limpiar() {
 }
 
 
-// Entrenar automáticamente
+// ================================
+// INICIAR
+// ================================
+
 entrenarRNA();
