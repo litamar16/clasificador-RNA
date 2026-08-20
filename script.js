@@ -1,7 +1,9 @@
-let modelo;
+let modeloParidad;
+let modeloPrimo;
+
 
 // ==========================================
-// COMPROBAR SI UN NÚMERO ES PRIMO
+// COMPROBACIÓN MATEMÁTICA DE PRIMO
 // ==========================================
 
 function esPrimo(numero) {
@@ -23,21 +25,14 @@ function esPrimo(numero) {
 
 
 // ==========================================
-// ENTRENAR RED NEURONAL
+// RNA 1
+// PAR / IMPAR
 // ==========================================
 
-async function entrenarRNA() {
-
-  document.getElementById("estado").innerText =
-    "Entrenando RNA...";
+async function entrenarRNAParidad() {
 
   const entradas = [];
   const salidas = [];
-
-
-  // Datos de entrenamiento
-  // 0 = PAR
-  // 1 = IMPAR
 
   for (let numero = 0; numero <= 100; numero++) {
 
@@ -51,21 +46,13 @@ async function entrenarRNA() {
 
   }
 
-
-  // Convertir datos a tensores
-
   const xs = tf.tensor2d(entradas);
   const ys = tf.tensor2d(salidas);
 
 
-  // Crear RNA
+  modeloParidad = tf.sequential();
 
-  modelo = tf.sequential();
-
-
-  // Primera capa
-
-  modelo.add(
+  modeloParidad.add(
     tf.layers.dense({
       inputShape: [1],
       units: 16,
@@ -73,20 +60,14 @@ async function entrenarRNA() {
     })
   );
 
-
-  // Segunda capa
-
-  modelo.add(
+  modeloParidad.add(
     tf.layers.dense({
       units: 8,
       activation: "relu"
     })
   );
 
-
-  // Capa de salida
-
-  modelo.add(
+  modeloParidad.add(
     tf.layers.dense({
       units: 1,
       activation: "sigmoid"
@@ -94,9 +75,7 @@ async function entrenarRNA() {
   );
 
 
-  // Configurar RNA
-
-  modelo.compile({
+  modeloParidad.compile({
 
     optimizer: tf.train.adam(0.01),
 
@@ -107,52 +86,161 @@ async function entrenarRNA() {
   });
 
 
-  // Entrenar
-
-  await modelo.fit(xs, ys, {
+  await modeloParidad.fit(xs, ys, {
 
     epochs: 100,
 
     shuffle: true,
 
-    callbacks: {
-
-      onEpochEnd: (epoca) => {
-
-        document.getElementById("estado").innerText =
-          "Entrenando época " + (epoca + 1) + "/100";
-
-      }
-
-    }
+    verbose: 0
 
   });
 
 
-  // Liberar memoria
+  xs.dispose();
+  ys.dispose();
+}
+
+
+// ==========================================
+// RNA 2
+// PRIMO / NO PRIMO
+// ==========================================
+
+async function entrenarRNAPrimos() {
+
+  const entradas = [];
+  const salidas = [];
+
+
+  // Entrenamiento del 1 al 100
+
+  for (let numero = 1; numero <= 100; numero++) {
+
+    entradas.push([numero / 100]);
+
+
+    if (esPrimo(numero)) {
+
+      salidas.push([1]);
+
+    } else {
+
+      salidas.push([0]);
+
+    }
+
+  }
+
+
+  const xs = tf.tensor2d(entradas);
+  const ys = tf.tensor2d(salidas);
+
+
+  modeloPrimo = tf.sequential();
+
+
+  modeloPrimo.add(
+    tf.layers.dense({
+      inputShape: [1],
+      units: 32,
+      activation: "relu"
+    })
+  );
+
+
+  modeloPrimo.add(
+    tf.layers.dense({
+      units: 16,
+      activation: "relu"
+    })
+  );
+
+
+  modeloPrimo.add(
+    tf.layers.dense({
+      units: 8,
+      activation: "relu"
+    })
+  );
+
+
+  modeloPrimo.add(
+    tf.layers.dense({
+      units: 1,
+      activation: "sigmoid"
+    })
+  );
+
+
+  modeloPrimo.compile({
+
+    optimizer: tf.train.adam(0.01),
+
+    loss: "binaryCrossentropy",
+
+    metrics: ["accuracy"]
+
+  });
+
+
+  await modeloPrimo.fit(xs, ys, {
+
+    epochs: 300,
+
+    shuffle: true,
+
+    verbose: 0
+
+  });
+
 
   xs.dispose();
   ys.dispose();
+}
+
+
+// ==========================================
+// ENTRENAR LAS DOS RNA
+// ==========================================
+
+async function entrenarTodo() {
+
+  document.getElementById("estado").innerText =
+    "Entrenando RNA 1...";
+
+
+  await entrenarRNAParidad();
 
 
   document.getElementById("estado").innerText =
-    "RNA entrenada ✅";
+    "Entrenando RNA 2...";
 
 
-  document.getElementById("resultado").innerHTML =
-    `
-    <h2>🧠 RNA lista</h2>
+  await entrenarRNAPrimos();
+
+
+  document.getElementById("estado").innerText =
+    "¡RNA 1 y RNA 2 listas! ✅";
+
+
+  document.getElementById("resultado").innerHTML = `
+
+    <h2>🧠 IA preparada</h2>
 
     <p>
-      La Red Neuronal Artificial está preparada
-      para analizar números.
+      RNA 1: Par / Impar ✅
     </p>
 
     <p>
-      Introduce un número y pulsa
-      <strong>ANALIZAR</strong>.
+      RNA 2: Primo / No primo ✅
     </p>
-    `;
+
+    <p>
+      Entrenamiento: números del 1 al 100
+    </p>
+
+  `;
 }
 
 
@@ -163,12 +251,10 @@ async function entrenarRNA() {
 async function analizarNumero() {
 
 
-  // Comprobar que la RNA esté lista
-
-  if (!modelo) {
+  if (!modeloParidad || !modeloPrimo) {
 
     alert(
-      "La RNA todavía está entrenándose. Espera unos segundos."
+      "Las redes neuronales todavía se están entrenando."
     );
 
     return;
@@ -176,14 +262,10 @@ async function analizarNumero() {
   }
 
 
-  // Obtener número
-
   const numero = Number(
     document.getElementById("numero").value
   );
 
-
-  // Comprobar entrada
 
   if (
     document.getElementById("numero").value === ""
@@ -198,45 +280,104 @@ async function analizarNumero() {
   }
 
 
+  if (numero < 1 || numero > 100) {
+
+    document.getElementById("resultado").innerHTML = `
+
+      <h3>⚠️ Número fuera del rango</h3>
+
+      <p>
+        Las RNA fueron entrenadas con números
+        del <strong>1 al 100</strong>.
+      </p>
+
+    `;
+
+    return;
+
+  }
+
+
   // ==========================================
-  // PREDICCIÓN DE LA RNA
+  // RNA 1: PAR / IMPAR
   // ==========================================
 
-  const entrada = tf.tensor2d([
+  const entradaParidad = tf.tensor2d([
     [numero / 100]
   ]);
 
 
-  const prediccion = modelo.predict(entrada);
+  const prediccionParidad =
+    modeloParidad.predict(entradaParidad);
 
 
-  const valor =
-    (await prediccion.data())[0];
+  const valorParidad =
+    (await prediccionParidad.data())[0];
 
 
-  entrada.dispose();
-  prediccion.dispose();
+  entradaParidad.dispose();
+  prediccionParidad.dispose();
 
 
-  // ==========================================
-  // PAR / IMPAR SEGÚN LA RNA
-  // ==========================================
-
-  let resultadoRNA;
-  let confianzaRNA;
+  let resultadoParidad;
+  let confianzaParidad;
 
 
-  if (valor >= 0.5) {
+  if (valorParidad >= 0.5) {
 
-    resultadoRNA = "IMPAR";
+    resultadoParidad = "IMPAR";
 
-    confianzaRNA = valor * 100;
+    confianzaParidad =
+      valorParidad * 100;
 
   } else {
 
-    resultadoRNA = "PAR";
+    resultadoParidad = "PAR";
 
-    confianzaRNA = (1 - valor) * 100;
+    confianzaParidad =
+      (1 - valorParidad) * 100;
+
+  }
+
+
+  // ==========================================
+  // RNA 2: PRIMO / NO PRIMO
+  // ==========================================
+
+  const entradaPrimo = tf.tensor2d([
+    [numero / 100]
+  ]);
+
+
+  const prediccionPrimo =
+    modeloPrimo.predict(entradaPrimo);
+
+
+  const valorPrimo =
+    (await prediccionPrimo.data())[0];
+
+
+  entradaPrimo.dispose();
+  prediccionPrimo.dispose();
+
+
+  let resultadoPrimo;
+  let confianzaPrimo;
+
+
+  if (valorPrimo >= 0.5) {
+
+    resultadoPrimo = "PRIMO";
+
+    confianzaPrimo =
+      valorPrimo * 100;
+
+  } else {
+
+    resultadoPrimo = "NO PRIMO";
+
+    confianzaPrimo =
+      (1 - valorPrimo) * 100;
 
   }
 
@@ -245,23 +386,16 @@ async function analizarNumero() {
   // COMPROBACIÓN MATEMÁTICA
   // ==========================================
 
-  const resultadoMatematico =
+  const comprobacionParidad =
     numero % 2 === 0
       ? "PAR"
       : "IMPAR";
 
 
-  // ==========================================
-  // PRIMO / NO PRIMO
-  // ==========================================
-
-  const primo = esPrimo(numero);
-
-
-  const resultadoPrimo =
-    primo
-      ? "SÍ 🟢"
-      : "NO 🔴";
+  const comprobacionPrimo =
+    esPrimo(numero)
+      ? "PRIMO"
+      : "NO PRIMO";
 
 
   // ==========================================
@@ -274,30 +408,52 @@ async function analizarNumero() {
 
     <hr>
 
-    <h3>🧠 Red Neuronal Artificial</h3>
+    <h3>🧠 RNA 1 — Paridad</h3>
 
     <p>
       Predicción:
-      <strong>${resultadoRNA}</strong>
+      <strong>${resultadoParidad}</strong>
     </p>
 
     <p>
       Confianza:
-      <strong>${confianzaRNA.toFixed(2)}%</strong>
+      <strong>
+        ${confianzaParidad.toFixed(2)}%
+      </strong>
     </p>
+
 
     <hr>
 
-    <h3>🔬 Análisis matemático</h3>
+
+    <h3>🧠 RNA 2 — Primalidad</h3>
 
     <p>
-      Paridad:
-      <strong>${resultadoMatematico}</strong>
+      Predicción:
+      <strong>${resultadoPrimo}</strong>
     </p>
 
     <p>
-      ¿Es primo?:
-      <strong>${resultadoPrimo}</strong>
+      Confianza:
+      <strong>
+        ${confianzaPrimo.toFixed(2)}%
+      </strong>
+    </p>
+
+
+    <hr>
+
+
+    <h3>🔬 Comprobación matemática</h3>
+
+    <p>
+      Paridad:
+      <strong>${comprobacionParidad}</strong>
+    </p>
+
+    <p>
+      Número primo:
+      <strong>${comprobacionPrimo}</strong>
     </p>
 
   `;
@@ -308,4 +464,4 @@ async function analizarNumero() {
 // INICIAR ENTRENAMIENTO
 // ==========================================
 
-entrenarRNA();
+entrenarTodo();
