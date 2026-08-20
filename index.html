@@ -2,44 +2,220 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Clasificador RNA</title>
 
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
 
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+  <title>Clasificador RNA</title>
+
+  <!-- TensorFlow.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+
+  <link rel="stylesheet" href="style.css">
+
 </head>
+
 
 <body>
 
-    <div class="app">
+  <div class="contenedor">
 
-        <h1>🧠 Clasificador de Números</h1>
+    <!-- ENCABEZADO -->
 
-        <p>Red Neuronal Artificial</p>
+    <header>
 
-        <div class="estado">
-            Estado:
-            <strong id="estado">Preparando...</strong>
-        </div>
+      <div class="icono">🧠</div>
 
-        <input
-            id="numero"
-            type="number"
-            placeholder="Introduce un número"
-        >
+      <h1>Clasificador de Números</h1>
 
-        <button onclick="analizarNumero()">
-            🔍 ANALIZAR
+      <p>
+        Aplicación basada en Redes Neuronales Artificiales
+      </p>
+
+    </header>
+
+
+    <!-- ESTADO DE LA IA -->
+
+    <section class="estado">
+
+      <div class="estado-icono">
+        ⚡
+      </div>
+
+      <div>
+
+        <span>Estado de la Inteligencia Artificial</span>
+
+        <strong id="estado">
+          Preparando RNA...
+        </strong>
+
+      </div>
+
+    </section>
+
+
+    <!-- ENTRENAMIENTO -->
+
+    <section class="entrenamiento">
+
+      <div class="barra">
+
+        <div id="progreso"></div>
+
+      </div>
+
+      <p id="textoProgreso">
+        Inicializando redes neuronales...
+      </p>
+
+    </section>
+
+
+    <!-- ANALIZADOR -->
+
+    <section class="tarjeta">
+
+      <h2>🔢 Analiza un número</h2>
+
+      <p class="descripcion">
+
+        Introduce un número entero entre
+        <strong>1 y 100</strong>.
+
+      </p>
+
+
+      <input
+        id="numero"
+        type="number"
+        min="1"
+        max="100"
+        placeholder="Ejemplo: 17"
+      >
+
+
+      <div class="botones">
+
+        <button
+          class="btn-analizar"
+          onclick="analizarNumero()">
+
+          🧠 ANALIZAR
+
         </button>
 
-        <div id="resultado">
-            Entrenando la RNA...
+
+        <button
+          class="btn-limpiar"
+          onclick="limpiar()">
+
+          🔄 LIMPIAR
+
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- RESULTADOS -->
+
+    <section
+      id="resultado"
+      class="resultado oculto">
+
+    </section>
+
+
+    <!-- INFORMACIÓN -->
+
+    <section class="informacion">
+
+      <h2>🧠 ¿Cómo funciona?</h2>
+
+      <p>
+
+        Esta aplicación utiliza dos Redes Neuronales
+        Artificiales entrenadas con ejemplos numéricos.
+
+      </p>
+
+
+      <div class="rna-grid">
+
+        <div class="rna-card">
+
+          <div class="rna-icon">
+            1️⃣
+          </div>
+
+          <h3>RNA 1</h3>
+
+          <p>
+            Clasifica el número como
+            <strong>PAR</strong> o
+            <strong>IMPAR</strong>.
+          </p>
+
         </div>
 
-    </div>
 
-    <script src="script.js"></script>
+        <div class="rna-card">
+
+          <div class="rna-icon">
+            2️⃣
+          </div>
+
+          <h3>RNA 2</h3>
+
+          <p>
+            Clasifica el número como
+            <strong>PRIMO</strong> o
+            <strong>NO PRIMO</strong>.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="flujo">
+
+        <span>🔢 Número</span>
+
+        <b>→</b>
+
+        <span>🧠 RNA</span>
+
+        <b>→</b>
+
+        <span>📊 Predicción</span>
+
+      </div>
+
+    </section>
+
+
+    <footer>
+
+      <p>
+        Proyecto educativo de Inteligencia Artificial
+      </p>
+
+      <p>
+        Redes Neuronales Artificiales • TensorFlow.js
+      </p>
+
+    </footer>
+
+  </div>
+
+
+  <script src="script.js"></script>
 
 </body>
 
