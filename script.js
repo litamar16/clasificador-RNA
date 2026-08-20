@@ -1,3 +1,55 @@
+
+function esPrimo(numero) {
+
+  if (numero < 2) {
+    return false;
+  }
+
+  for (let i = 2; i <= Math.sqrt(numero); i++) {
+    if (numero % i === 0) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+
+function analizarNumero() {
+
+  let numero = Number(
+    document.getElementById("numero").value
+  );
+
+  if (isNaN(numero)) {
+    document.getElementById("resultado").innerHTML =
+      "⚠️ Introduce un número.";
+    return;
+  }
+
+  let paridad;
+
+  if (numero % 2 === 0) {
+    paridad = "PAR";
+  } else {
+    paridad = "IMPAR";
+  }
+
+  let primo = esPrimo(numero);
+
+  document.getElementById("resultado").innerHTML =
+    `
+    <strong>🔢 Número:</strong> ${numero}<br><br>
+
+    <strong>📊 Clasificación:</strong> ${paridad}<br>
+
+    <strong>🔬 Primo:</strong>
+    ${primo ? "SÍ 🟢" : "NO 🔴"}
+    `;
+}
+
+
+
 let modelo;
 
 // Crear y entrenar la RNA
