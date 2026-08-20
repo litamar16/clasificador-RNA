@@ -3,219 +3,66 @@
 
 <head>
 
-  <meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-  <title>Clasificador RNA</title>
+    <title>RNA - Clasificador de Números</title>
 
-  <!-- TensorFlow.js -->
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-
-  <link rel="stylesheet" href="style.css">
+    <!-- TensorFlow.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script>
 
 </head>
 
 
 <body>
 
-  <div class="contenedor">
+    <h1>🧠 Clasificador de Números con RNA</h1>
 
-    <!-- ENCABEZADO -->
-
-    <header>
-
-      <div class="icono">🧠</div>
-
-      <h1>Clasificador de Números</h1>
-
-      <p>
-        Aplicación basada en Redes Neuronales Artificiales
-      </p>
-
-    </header>
+    <p id="estado">
+        ⏳ Preparando Red Neuronal...
+    </p>
 
 
-    <!-- ESTADO DE LA IA -->
-
-    <section class="estado">
-
-      <div class="estado-icono">
-        ⚡
-      </div>
-
-      <div>
-
-        <span>Estado de la Inteligencia Artificial</span>
-
-        <strong id="estado">
-          Preparando RNA...
-        </strong>
-
-      </div>
-
-    </section>
+    <hr>
 
 
-    <!-- ENTRENAMIENTO -->
+    <h2>Introduce un número</h2>
 
-    <section class="entrenamiento">
-
-      <div class="barra">
-
-        <div id="progreso"></div>
-
-      </div>
-
-      <p id="textoProgreso">
-        Inicializando redes neuronales...
-      </p>
-
-    </section>
-
-
-    <!-- ANALIZADOR -->
-
-    <section class="tarjeta">
-
-      <h2>🔢 Analiza un número</h2>
-
-      <p class="descripcion">
-
-        Introduce un número entero entre
-        <strong>1 y 100</strong>.
-
-      </p>
-
-
-      <input
+    <input
         id="numero"
         type="number"
-        min="1"
-        max="100"
         placeholder="Ejemplo: 17"
-      >
+    >
 
 
-      <div class="botones">
-
-        <button
-          class="btn-analizar"
-          onclick="analizarNumero()">
-
-          🧠 ANALIZAR
-
-        </button>
+    <br><br>
 
 
-        <button
-          class="btn-limpiar"
-          onclick="limpiar()">
-
-          🔄 LIMPIAR
-
-        </button>
-
-      </div>
-
-    </section>
+    <button id="btnAnalizar">
+        🔍 ANALIZAR
+    </button>
 
 
-    <!-- RESULTADOS -->
-
-    <section
-      id="resultado"
-      class="resultado oculto">
-
-    </section>
+    <button id="btnLimpiar">
+        🧹 LIMPIAR
+    </button>
 
 
-    <!-- INFORMACIÓN -->
-
-    <section class="informacion">
-
-      <h2>🧠 ¿Cómo funciona?</h2>
-
-      <p>
-
-        Esta aplicación utiliza dos Redes Neuronales
-        Artificiales entrenadas con ejemplos numéricos.
-
-      </p>
+    <hr>
 
 
-      <div class="rna-grid">
+    <div id="resultado">
 
-        <div class="rna-card">
+        Aquí aparecerán los resultados.
 
-          <div class="rna-icon">
-            1️⃣
-          </div>
-
-          <h3>RNA 1</h3>
-
-          <p>
-            Clasifica el número como
-            <strong>PAR</strong> o
-            <strong>IMPAR</strong>.
-          </p>
-
-        </div>
+    </div>
 
 
-        <div class="rna-card">
+    <!-- Nuestro JavaScript -->
 
-          <div class="rna-icon">
-            2️⃣
-          </div>
-
-          <h3>RNA 2</h3>
-
-          <p>
-            Clasifica el número como
-            <strong>PRIMO</strong> o
-            <strong>NO PRIMO</strong>.
-          </p>
-
-        </div>
-
-      </div>
-
-
-      <div class="flujo">
-
-        <span>🔢 Número</span>
-
-        <b>→</b>
-
-        <span>🧠 RNA</span>
-
-        <b>→</b>
-
-        <span>📊 Predicción</span>
-
-      </div>
-
-    </section>
-
-
-    <footer>
-
-      <p>
-        Proyecto educativo de Inteligencia Artificial
-      </p>
-
-      <p>
-        Redes Neuronales Artificiales • TensorFlow.js
-      </p>
-
-    </footer>
-
-  </div>
-
-
-  <script src="script.js"></script>
+    <script src="./script.js"></script>
 
 </body>
 
