@@ -8,114 +8,389 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>🧠 RNA Clasificadora</title>
-
+    <title>🧠 Clasificador RNA</title>
 
     <!-- TensorFlow.js -->
-
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script>
 
 
     <style>
 
+        * {
+            box-sizing: border-box;
+        }
+
+
         body {
 
-            font-family: Arial, sans-serif;
+            margin: 0;
 
-            max-width: 600px;
+            min-height: 100vh;
 
-            margin: auto;
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
 
-            padding: 30px;
+            background:
+                linear-gradient(
+                    135deg,
+                    #101827,
+                    #182b49,
+                    #263b63
+                );
 
-            text-align: center;
+            color: white;
 
-            background: #f4f6f8;
+            padding: 20px;
 
         }
 
 
-        .contenedor {
+        .app {
 
-            background: white;
+            width: 100%;
+
+            max-width: 650px;
+
+            margin: 30px auto;
+
+        }
+
+
+        /* ENCABEZADO */
+
+        .encabezado {
+
+            text-align: center;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .cerebro {
+
+            font-size: 65px;
+
+            margin-bottom: 5px;
+
+        }
+
+
+        h1 {
+
+            margin: 5px 0;
+
+            font-size: 32px;
+
+        }
+
+
+        .subtitulo {
+
+            color: #cbd5e1;
+
+            margin-top: 8px;
+
+        }
+
+
+        /* TARJETA PRINCIPAL */
+
+        .tarjeta {
+
+            background: rgba(255,255,255,0.10);
+
+            border: 1px solid rgba(255,255,255,0.15);
+
+            border-radius: 22px;
 
             padding: 25px;
 
-            border-radius: 15px;
+            backdrop-filter: blur(10px);
 
             box-shadow:
-                0 5px 20px
-                rgba(0,0,0,0.1);
+                0 15px 40px rgba(0,0,0,0.3);
+
+        }
+
+
+        /* ESTADO */
+
+        .estado {
+
+            text-align: center;
+
+            padding: 12px;
+
+            border-radius: 12px;
+
+            background: rgba(0,0,0,0.20);
+
+            margin-bottom: 25px;
+
+            font-weight: bold;
+
+        }
+
+
+        /* INPUT */
+
+        label {
+
+            display: block;
+
+            margin-bottom: 8px;
+
+            color: #dbeafe;
 
         }
 
 
         input {
 
-            width: 80%;
+            width: 100%;
 
-            padding: 12px;
+            padding: 16px;
 
-            font-size: 18px;
+            border-radius: 12px;
 
-            margin: 10px;
+            border: 2px solid transparent;
+
+            outline: none;
+
+            font-size: 22px;
+
+            text-align: center;
+
+            background: white;
+
+            color: #172033;
+
+        }
+
+
+        input:focus {
+
+            border-color: #60a5fa;
+
+        }
+
+
+        /* BOTONES */
+
+        .botones {
+
+            display: flex;
+
+            gap: 10px;
+
+            margin-top: 15px;
 
         }
 
 
         button {
 
-            padding: 12px 20px;
+            flex: 1;
 
-            margin: 5px;
+            padding: 15px;
 
             border: none;
 
-            border-radius: 8px;
-
-            cursor: pointer;
+            border-radius: 12px;
 
             font-size: 16px;
 
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+
         }
 
 
-        #analizar {
+        .analizar {
 
-            background: #4CAF50;
+            background: #22c55e;
 
             color: white;
 
         }
 
 
-        #limpiar {
+        .limpiar {
 
-            background: #777;
+            background: #64748b;
 
             color: white;
 
         }
 
+
+        button:hover {
+
+            transform: translateY(-2px);
+
+            opacity: 0.9;
+
+        }
+
+
+        /* RESULTADO */
 
         #resultado {
 
             margin-top: 25px;
-
-            padding: 20px;
-
-            border-radius: 10px;
-
-            background: #f0f0f0;
 
         }
 
 
         .numero {
 
-            font-size: 40px;
+            text-align: center;
+
+            font-size: 55px;
 
             font-weight: bold;
+
+            margin: 10px 0 20px;
+
+        }
+
+
+        .grid {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 15px;
+
+        }
+
+
+        .resultado-card {
+
+            background:
+                rgba(255,255,255,0.10);
+
+            border-radius: 18px;
+
+            padding: 20px;
+
+            text-align: center;
+
+            border:
+                1px solid
+                rgba(255,255,255,0.12);
+
+        }
+
+
+        .resultado-card h3 {
+
+            margin-top: 0;
+
+            color: #bfdbfe;
+
+        }
+
+
+        .valor {
+
+            font-size: 25px;
+
+            font-weight: bold;
+
+            margin: 15px 0;
+
+        }
+
+
+        .confianza {
+
+            color: #cbd5e1;
+
+            font-size: 14px;
+
+        }
+
+
+        .separador {
+
+            border: none;
+
+            border-top:
+                1px solid
+                rgba(255,255,255,0.15);
+
+            margin: 25px 0;
+
+        }
+
+
+        /* INFORMACIÓN */
+
+        .info {
+
+            margin-top: 20px;
+
+            padding: 18px;
+
+            border-radius: 15px;
+
+            background:
+                rgba(37,99,235,0.15);
+
+            color: #dbeafe;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+
+        }
+
+
+        .footer {
+
+            text-align: center;
+
+            color: #94a3b8;
+
+            font-size: 13px;
+
+            margin-top: 20px;
+
+        }
+
+
+        /* CELULAR */
+
+        @media (max-width: 600px) {
+
+            .grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            h1 {
+
+                font-size: 26px;
+
+            }
+
+
+            .botones {
+
+                flex-direction: column;
+
+            }
 
         }
 
@@ -127,51 +402,113 @@
 <body>
 
 
-<div class="contenedor">
+<div class="app">
 
 
-    <h1>🧠 Clasificador con RNA</h1>
+    <!-- ENCABEZADO -->
+
+    <div class="encabezado">
+
+        <div class="cerebro">
+            🧠
+        </div>
+
+        <h1>
+            Clasificador RNA
+        </h1>
+
+        <p class="subtitulo">
+            Red Neuronal Artificial para analizar números
+        </p>
+
+    </div>
 
 
-    <p id="estado">
+    <!-- APLICACIÓN -->
 
-        ⏳ Cargando TensorFlow.js...
-
-    </p>
+    <div class="tarjeta">
 
 
-    <input
+        <!-- ESTADO -->
 
-        id="numero"
+        <div
+            id="estado"
+            class="estado"
+        >
 
-        type="number"
+            ⏳ Entrenando Red Neuronal...
 
-        placeholder="Escribe un número"
-
-
-    >
-
-
-    <br>
+        </div>
 
 
-    <button id="analizar">
+        <!-- ENTRADA -->
 
-        🔍 ANALIZAR
+        <label for="numero">
 
-    </button>
+            🔢 Introduce un número
 
-
-    <button id="limpiar">
-
-        🧹 LIMPIAR
-
-    </button>
+        </label>
 
 
-    <div id="resultado">
+        <input
+            id="numero"
+            type="number"
+            placeholder="Ejemplo: 17"
+        >
 
-        Introduce un número.
+
+        <!-- BOTONES -->
+
+        <div class="botones">
+
+            <button
+                id="analizar"
+                class="analizar"
+            >
+
+                🔍 ANALIZAR
+
+            </button>
+
+
+            <button
+                id="limpiar"
+                class="limpiar"
+            >
+
+                🧹 LIMPIAR
+
+            </button>
+
+        </div>
+
+
+        <!-- RESULTADO -->
+
+        <div id="resultado">
+
+            <div class="info">
+
+                🧠 Introduce un número y pulsa
+                <strong>ANALIZAR</strong>.
+
+                <br><br>
+
+                La aplicación utilizará una
+                <strong>Red Neuronal Artificial</strong>
+                para realizar la clasificación.
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="footer">
+
+        Proyecto académico • Redes Neuronales Artificiales
 
     </div>
 
@@ -183,14 +520,14 @@
 <script>
 
 // =================================================
-// VARIABLES
+// VARIABLE DE LA RNA
 // =================================================
 
 let modelo = null;
 
 
 // =================================================
-// FUNCIÓN PRIMO
+// COMPROBAR PRIMO
 // =================================================
 
 function esPrimo(numero) {
@@ -238,12 +575,10 @@ async function entrenarRNA() {
 
 
     estado.innerText =
-        "🧠 Entrenando RNA...";
+        "🧠 Entrenando Red Neuronal...";
 
 
-    // ---------------------------------------------
-    // DATOS
-    // ---------------------------------------------
+    // Datos
 
     const entradas = [];
 
@@ -260,13 +595,15 @@ async function entrenarRNA() {
 
     ) {
 
-
         entradas.push([
 
             numero / 20
 
         ]);
 
+
+        // 0 = PAR
+        // 1 = IMPAR
 
         salidas.push([
 
@@ -277,9 +614,7 @@ async function entrenarRNA() {
     }
 
 
-    // ---------------------------------------------
-    // TENSORES
-    // ---------------------------------------------
+    // Tensores
 
     const xs =
         tf.tensor2d(entradas);
@@ -289,9 +624,7 @@ async function entrenarRNA() {
         tf.tensor2d(salidas);
 
 
-    // ---------------------------------------------
-    // MODELO
-    // ---------------------------------------------
+    // Crear modelo
 
     modelo =
         tf.sequential();
@@ -325,9 +658,7 @@ async function entrenarRNA() {
     );
 
 
-    // ---------------------------------------------
-    // CONFIGURACIÓN
-    // ---------------------------------------------
+    // Configuración
 
     modelo.compile({
 
@@ -338,9 +669,7 @@ async function entrenarRNA() {
     });
 
 
-    // ---------------------------------------------
-    // ENTRENAR
-    // ---------------------------------------------
+    // Entrenamiento
 
     await modelo.fit(
 
@@ -361,9 +690,7 @@ async function entrenarRNA() {
     );
 
 
-    // ---------------------------------------------
-    // LIMPIAR MEMORIA
-    // ---------------------------------------------
+    // Liberar memoria
 
     xs.dispose();
 
@@ -371,7 +698,7 @@ async function entrenarRNA() {
 
 
     estado.innerText =
-        "✅ RNA lista";
+        "✅ Red Neuronal lista";
 
 }
 
@@ -386,7 +713,7 @@ async function analizarNumero() {
     if (modelo === null) {
 
         alert(
-            "Espera a que aparezca RNA lista."
+            "⏳ Espera a que la RNA termine de entrenarse."
         );
 
         return;
@@ -394,22 +721,33 @@ async function analizarNumero() {
     }
 
 
+    const campo =
+        document.getElementById("numero");
+
+
     const numero =
-        Number(
-
-            document
-                .getElementById("numero")
-                .value
-
-        );
+        Number(campo.value);
 
 
-    if (!Number.isInteger(numero)) {
+    if (
 
-        document
-            .getElementById("resultado")
-            .innerHTML =
-            "⚠️ Introduce un número.";
+        campo.value === "" ||
+
+        !Number.isInteger(numero)
+
+    ) {
+
+        document.getElementById(
+            "resultado"
+        ).innerHTML = `
+
+            <div class="info">
+
+                ⚠️ Introduce un número entero.
+
+            </div>
+
+        `;
 
         return;
 
@@ -421,7 +759,6 @@ async function analizarNumero() {
     // ---------------------------------------------
 
     const entrada =
-
         tf.tensor2d([
 
             [numero / 20]
@@ -430,12 +767,10 @@ async function analizarNumero() {
 
 
     const prediccion =
-
         modelo.predict(entrada);
 
 
     const valor =
-
         (await prediccion.data())[0];
 
 
@@ -458,21 +793,50 @@ async function analizarNumero() {
 
 
     // ---------------------------------------------
+    // CONFIANZA
+    // ---------------------------------------------
+
+    let confianza;
+
+
+    if (paridad === "IMPAR") {
+
+        confianza =
+            valor * 100;
+
+    } else {
+
+        confianza =
+            (1 - valor) * 100;
+
+    }
+
+
+    // ---------------------------------------------
     // PRIMO
     // ---------------------------------------------
 
     const primo =
-
         esPrimo(numero);
+
+
+    const textoPrimo =
+
+        primo
+
+            ? "PRIMO 🟢"
+
+            : "NO PRIMO 🔴";
 
 
     // ---------------------------------------------
     // MOSTRAR
     // ---------------------------------------------
 
-    document
-        .getElementById("resultado")
-        .innerHTML = `
+    document.getElementById(
+        "resultado"
+    ).innerHTML = `
+
 
         <div class="numero">
 
@@ -481,46 +845,90 @@ async function analizarNumero() {
         </div>
 
 
-        <h2>
-
-            🧠 ${paridad}
-
-        </h2>
+        <div class="grid">
 
 
-        <p>
+            <div class="resultado-card">
 
-            Resultado de la RNA
+                <h3>
 
-        </p>
+                    🧠 RNA
 
-
-        <hr>
-
-
-        <h2>
-
-            🔬
-
-            ${
-
-                primo
-
-                ? "PRIMO 🟢"
-
-                : "NO PRIMO 🔴"
-
-            }
-
-        </h2>
+                </h3>
 
 
-        <p>
+                <div class="valor">
 
-            Comprobación matemática
+                    ${paridad}
 
-        </p>
+                </div>
 
+
+                <div class="confianza">
+
+                    Confianza aproximada
+
+                    <br>
+
+                    <strong>
+
+                        ${confianza.toFixed(2)}%
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="resultado-card">
+
+                <h3>
+
+                    🔬 Primo
+
+                </h3>
+
+
+                <div class="valor">
+
+                    ${textoPrimo}
+
+                </div>
+
+
+                <div class="confianza">
+
+                    Análisis matemático
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <hr class="separador">
+
+
+        <div class="info">
+
+            🧠 <strong>¿Cómo funciona?</strong>
+
+            <br><br>
+
+            La Red Neuronal Artificial recibe
+            el número y realiza una predicción
+            de su paridad.
+
+            <br><br>
+
+            Además, el programa comprueba
+            matemáticamente si el número es primo.
+
+        </div>
 
     `;
 
@@ -570,9 +978,17 @@ document
 
                 .getElementById("resultado")
 
-                .innerHTML =
+                .innerHTML = `
 
-                "Introduce un número.";
+                    <div class="info">
+
+                        🧠 Introduce un número
+                        y pulsa
+                        <strong>ANALIZAR</strong>.
+
+                    </div>
+
+                `;
 
         }
 
@@ -580,7 +996,7 @@ document
 
 
 // =================================================
-// INICIAR
+// INICIAR RNA
 // =================================================
 
 entrenarRNA();
