@@ -1,50 +1,593 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prueba</title>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>🧠 RNA Clasificadora</title>
+
+
+    <!-- TensorFlow.js -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script>
+
+
+    <style>
+
+        body {
+
+            font-family: Arial, sans-serif;
+
+            max-width: 600px;
+
+            margin: auto;
+
+            padding: 30px;
+
+            text-align: center;
+
+            background: #f4f6f8;
+
+        }
+
+
+        .contenedor {
+
+            background: white;
+
+            padding: 25px;
+
+            border-radius: 15px;
+
+            box-shadow:
+                0 5px 20px
+                rgba(0,0,0,0.1);
+
+        }
+
+
+        input {
+
+            width: 80%;
+
+            padding: 12px;
+
+            font-size: 18px;
+
+            margin: 10px;
+
+        }
+
+
+        button {
+
+            padding: 12px 20px;
+
+            margin: 5px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-size: 16px;
+
+        }
+
+
+        #analizar {
+
+            background: #4CAF50;
+
+            color: white;
+
+        }
+
+
+        #limpiar {
+
+            background: #777;
+
+            color: white;
+
+        }
+
+
+        #resultado {
+
+            margin-top: 25px;
+
+            padding: 20px;
+
+            border-radius: 10px;
+
+            background: #f0f0f0;
+
+        }
+
+
+        .numero {
+
+            font-size: 40px;
+
+            font-weight: bold;
+
+        }
+
+    </style>
+
 </head>
+
 
 <body>
 
-    <h1>Prueba de JavaScript</h1>
 
-    <input id="numero" type="number" placeholder="Número">
+<div class="contenedor">
 
-    <button onclick="analizar()">
-        ANALIZAR
+
+    <h1>🧠 Clasificador con RNA</h1>
+
+
+    <p id="estado">
+
+        ⏳ Cargando TensorFlow.js...
+
+    </p>
+
+
+    <input
+
+        id="numero"
+
+        type="number"
+
+        placeholder="Escribe un número"
+
+
+    >
+
+
+    <br>
+
+
+    <button id="analizar">
+
+        🔍 ANALIZAR
+
     </button>
 
-    <button onclick="limpiar()">
-        LIMPIAR
+
+    <button id="limpiar">
+
+        🧹 LIMPIAR
+
     </button>
 
-    <h2 id="resultado"></h2>
+
+    <div id="resultado">
+
+        Introduce un número.
+
+    </div>
 
 
-    <script>
+</div>
 
-        function analizar() {
 
-            let numero =
-                document.getElementById("numero").value;
 
-            document.getElementById("resultado").innerHTML =
-                "✅ FUNCIONA. Escribiste: " + numero;
+<script>
+
+// =================================================
+// VARIABLES
+// =================================================
+
+let modelo = null;
+
+
+// =================================================
+// FUNCIÓN PRIMO
+// =================================================
+
+function esPrimo(numero) {
+
+    if (numero < 2) {
+
+        return false;
+
+    }
+
+
+    for (
+
+        let i = 2;
+
+        i <= Math.sqrt(numero);
+
+        i++
+
+    ) {
+
+        if (numero % i === 0) {
+
+            return false;
 
         }
 
+    }
 
-        function limpiar() {
 
-            document.getElementById("numero").value = "";
+    return true;
 
-            document.getElementById("resultado").innerHTML = "";
+}
+
+
+// =================================================
+// ENTRENAR RNA
+// =================================================
+
+async function entrenarRNA() {
+
+
+    const estado =
+        document.getElementById("estado");
+
+
+    estado.innerText =
+        "🧠 Entrenando RNA...";
+
+
+    // ---------------------------------------------
+    // DATOS
+    // ---------------------------------------------
+
+    const entradas = [];
+
+    const salidas = [];
+
+
+    for (
+
+        let numero = 1;
+
+        numero <= 20;
+
+        numero++
+
+    ) {
+
+
+        entradas.push([
+
+            numero / 20
+
+        ]);
+
+
+        salidas.push([
+
+            numero % 2
+
+        ]);
+
+    }
+
+
+    // ---------------------------------------------
+    // TENSORES
+    // ---------------------------------------------
+
+    const xs =
+        tf.tensor2d(entradas);
+
+
+    const ys =
+        tf.tensor2d(salidas);
+
+
+    // ---------------------------------------------
+    // MODELO
+    // ---------------------------------------------
+
+    modelo =
+        tf.sequential();
+
+
+    modelo.add(
+
+        tf.layers.dense({
+
+            inputShape: [1],
+
+            units: 4,
+
+            activation: "relu"
+
+        })
+
+    );
+
+
+    modelo.add(
+
+        tf.layers.dense({
+
+            units: 1,
+
+            activation: "sigmoid"
+
+        })
+
+    );
+
+
+    // ---------------------------------------------
+    // CONFIGURACIÓN
+    // ---------------------------------------------
+
+    modelo.compile({
+
+        optimizer: "adam",
+
+        loss: "binaryCrossentropy"
+
+    });
+
+
+    // ---------------------------------------------
+    // ENTRENAR
+    // ---------------------------------------------
+
+    await modelo.fit(
+
+        xs,
+
+        ys,
+
+        {
+
+            epochs: 10,
+
+            shuffle: true,
+
+            verbose: 0
 
         }
 
-    </script>
+    );
+
+
+    // ---------------------------------------------
+    // LIMPIAR MEMORIA
+    // ---------------------------------------------
+
+    xs.dispose();
+
+    ys.dispose();
+
+
+    estado.innerText =
+        "✅ RNA lista";
+
+}
+
+
+// =================================================
+// ANALIZAR
+// =================================================
+
+async function analizarNumero() {
+
+
+    if (modelo === null) {
+
+        alert(
+            "Espera a que aparezca RNA lista."
+        );
+
+        return;
+
+    }
+
+
+    const numero =
+        Number(
+
+            document
+                .getElementById("numero")
+                .value
+
+        );
+
+
+    if (!Number.isInteger(numero)) {
+
+        document
+            .getElementById("resultado")
+            .innerHTML =
+            "⚠️ Introduce un número.";
+
+        return;
+
+    }
+
+
+    // ---------------------------------------------
+    // PREDICCIÓN RNA
+    // ---------------------------------------------
+
+    const entrada =
+
+        tf.tensor2d([
+
+            [numero / 20]
+
+        ]);
+
+
+    const prediccion =
+
+        modelo.predict(entrada);
+
+
+    const valor =
+
+        (await prediccion.data())[0];
+
+
+    entrada.dispose();
+
+    prediccion.dispose();
+
+
+    // ---------------------------------------------
+    // PAR / IMPAR
+    // ---------------------------------------------
+
+    const paridad =
+
+        numero % 2 === 0
+
+            ? "PAR"
+
+            : "IMPAR";
+
+
+    // ---------------------------------------------
+    // PRIMO
+    // ---------------------------------------------
+
+    const primo =
+
+        esPrimo(numero);
+
+
+    // ---------------------------------------------
+    // MOSTRAR
+    // ---------------------------------------------
+
+    document
+        .getElementById("resultado")
+        .innerHTML = `
+
+        <div class="numero">
+
+            ${numero}
+
+        </div>
+
+
+        <h2>
+
+            🧠 ${paridad}
+
+        </h2>
+
+
+        <p>
+
+            Resultado de la RNA
+
+        </p>
+
+
+        <hr>
+
+
+        <h2>
+
+            🔬
+
+            ${
+
+                primo
+
+                ? "PRIMO 🟢"
+
+                : "NO PRIMO 🔴"
+
+            }
+
+        </h2>
+
+
+        <p>
+
+            Comprobación matemática
+
+        </p>
+
+
+    `;
+
+}
+
+
+// =================================================
+// BOTÓN ANALIZAR
+// =================================================
+
+document
+
+    .getElementById("analizar")
+
+    .addEventListener(
+
+        "click",
+
+        analizarNumero
+
+    );
+
+
+// =================================================
+// BOTÓN LIMPIAR
+// =================================================
+
+document
+
+    .getElementById("limpiar")
+
+    .addEventListener(
+
+        "click",
+
+        function() {
+
+
+            document
+
+                .getElementById("numero")
+
+                .value = "";
+
+
+            document
+
+                .getElementById("resultado")
+
+                .innerHTML =
+
+                "Introduce un número.";
+
+        }
+
+    );
+
+
+// =================================================
+// INICIAR
+// =================================================
+
+entrenarRNA();
+
+</script>
+
 
 </body>
+
 </html>
