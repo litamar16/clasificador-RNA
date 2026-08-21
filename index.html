@@ -1,69 +1,50 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>RNA - Clasificador de Números</title>
-
-    <!-- TensorFlow.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba</title>
 </head>
-
 
 <body>
 
-    <h1>🧠 Clasificador de Números con RNA</h1>
+    <h1>Prueba de JavaScript</h1>
 
-    <p id="estado">
-        ⏳ Preparando Red Neuronal...
-    </p>
+    <input id="numero" type="number" placeholder="Número">
 
-
-    <hr>
-
-
-    <h2>Introduce un número</h2>
-
-    <input
-        id="numero"
-        type="number"
-        placeholder="Ejemplo: 17"
-    >
-
-
-    <br><br>
-
-
-    <button id="btnAnalizar">
-        🔍 ANALIZAR
+    <button onclick="analizar()">
+        ANALIZAR
     </button>
 
-
-    <button id="btnLimpiar">
-        🧹 LIMPIAR
+    <button onclick="limpiar()">
+        LIMPIAR
     </button>
 
-
-    <hr>
-
-
-    <div id="resultado">
-
-        Aquí aparecerán los resultados.
-
-    </div>
+    <h2 id="resultado"></h2>
 
 
-    <!-- Nuestro JavaScript -->
+    <script>
 
-    <script src="./script.js"></script>
+        function analizar() {
+
+            let numero =
+                document.getElementById("numero").value;
+
+            document.getElementById("resultado").innerHTML =
+                "✅ FUNCIONA. Escribiste: " + numero;
+
+        }
+
+
+        function limpiar() {
+
+            document.getElementById("numero").value = "";
+
+            document.getElementById("resultado").innerHTML = "";
+
+        }
+
+    </script>
 
 </body>
-
 </html>
